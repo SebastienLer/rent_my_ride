@@ -14,6 +14,7 @@ class Vehicle
     private datetime $created_at;
     private datetime $updated_at;
     private datetime $deleted_at;
+    private int $id_types;
     //  récupèrer id
     public function get_id_vehicles(): int
     {
@@ -105,19 +106,31 @@ class Vehicle
     {
         $this->deleted_at = $deleted_at;
     }
+    //  récupèrer id    
+    public function get_id_types(): int
+    {
+        return $this->id_types;
+    }
+    // set id
+    public function set_id_types(int $id_types)
+    {
+        $this->id_types = $id_types;
+    }
 
     //  insèrer valeur dans la banque de donnée
     public function insert(): bool
     {
         $pdo = connect();
         // Récuperation des données et envoie dans la base de données
-        $sql = 'INSERT INTO `vehicles`(`brand`, `model`, `registration`, `mileage`, `picture`) VALUE (:brand, :model, :registration, :mileage, :picture) ;';
+        $sql = 'INSERT INTO `vehicles`(`brand`, `model`, `registration`, `mileage`, `picture`, `id_types`) 
+                VALUE (:brand, :model, :registration, :mileage, :picture,:id_types) ;';
         $sth = $pdo->prepare($sql);
         $sth->bindValue(':brand', $this->get_brand());
         $sth->bindValue(':model', $this->get_model());
         $sth->bindValue(':registration', $this->get_registrations());
-        $sth->bindValue(':mileage', $this->get_mileage());
+        $sth->bindValue(':mileage', $this->get_mileage(), PDO::PARAM_INT);
         $sth->bindValue(':picture', $this->get_picture());
+        $sth->bindValue(':id_types', $this->get_id_types(), PDO::PARAM_INT);
         $result = $sth->execute();
         return $result;
     }
@@ -131,5 +144,26 @@ class Vehicle
         $sth = $pdo->query($sql);
         $vehicleList = $sth->fetchAll();
         return $vehicleList;
+    }
+    public static function get(int $id_vehicles): object
+    {
+        $pdo = connect();
+        $sql = 'SELECT * FROM `types` WHERE `id_vehicles`=:id_vehicles;';
+        $sth = $pdo->prepare($sql);
+        $sth->bindValue(':id_vehicles', $id_vehicles, PDO::PARAM_INT);
+        $sth->execute();
+        $result = $sth->fetch();
+        return $result;
+    }
+    public function update()
+    {
+        $pdo = connect();
+        $sql = 'UPDATE `vehicles` 
+                SET `brand`=:brand , `model`=:model , `registration`=:registration , `mileage`=:mileage , `picture`=:picture , `id_types`=:id_types';
+        $sth = $pdo->prepare($sql);
+
+        $sth->execute();
+        header('location: /controllers/dashboard/types/list-ctrl.php');
+        die;
     }
 }

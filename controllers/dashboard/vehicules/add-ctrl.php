@@ -13,7 +13,7 @@ try {
         $registration = filter_input(INPUT_POST, 'registration', FILTER_SANITIZE_SPECIAL_CHARS);
         $mileage = filter_input(INPUT_POST, 'mileage', FILTER_SANITIZE_NUMBER_INT);
         $picture ='';
-        $id_type = filter_input(INPUT_POST, 'id_type', FILTER_SANITIZE_SPECIAL_CHARS);
+        $id_type = filter_input(INPUT_POST, 'id_type', FILTER_SANITIZE_NUMBER_INT);
         if (empty($brand)) {
             $errors['brand'] = 'Veuillez entrer obligatoirement une marque';
         } else {
@@ -46,14 +46,15 @@ try {
                 $errors['mileage'] = 'Veuillez entrer un nombre valide';
             }
         }
-        if (empty($type)) {
-            $errors['type'] = 'Veuillez entrer obligatoirement une catégorie';
+        if (empty($id_type)) {
+            $errors['id_type'] = 'Veuillez entrer obligatoirement une catégorie';
         } else {
-            $isOk = filter_var($type, FILTER_VALIDATE_REGEXP);
+            $isOk = filter_var($id_type, FILTER_VALIDATE_INT);
             if (!$isOk) {
-                $errors['type'] = 'Veuillez entrer une catégorie valide';
+                $errors['id_type'] = 'Catégorie non valide';
             }
         }
+
         if (empty($errors)) {
             $newVehicle = new Vehicle();
             $newVehicle->set_brand($brand);
@@ -61,13 +62,13 @@ try {
             $newVehicle->set_registration($registration);
             $newVehicle->set_mileage($mileage);
             $newVehicle->set_picture($picture);
-            $newVehicle->set_id_types($type);
+            $newVehicle->set_id_types($id_type);
             $saved = $newVehicle->insert();
         }
     }
 } catch (\Throwable $th) {
     $error = $th->getMessage();
-
+    
     include __DIR__ . '/../../../views/templates/header.php';
     include __DIR__ . '/../../../views/templates/error.php';
     include __DIR__ . '/../../../views/templates/footer.php';

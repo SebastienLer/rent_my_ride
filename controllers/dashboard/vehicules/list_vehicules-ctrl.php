@@ -1,11 +1,13 @@
 <?php
 
 require_once __DIR__ . '/../../../models/Vehicule.php';
+require_once __DIR__ . '/../../../models/Type.php';
 
 try {
     $vehicles = Vehicle::get_all();
-    $type = Type::get($vehicle->id_types);
     $delete = filter_input(INPUT_GET, 'delete', FILTER_SANITIZE_NUMBER_INT);
+    
+
 } catch (\Throwable $th) {
     $error = $th->getMessage();
 

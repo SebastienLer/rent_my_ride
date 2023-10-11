@@ -14,8 +14,8 @@
     <label for="picture">Image du véhicule</label>
     <input name="picture" id="picture" type="file">
     <p><?=$errors['picture'] ?? ''?></p>
-    <select name="type" id="id_type">
-        <option value="">-Selectionner une catégorie-</option>
+    <select name="id_type" id="id_type">
+        <option value="" selected disabled>-Selectionner une catégorie-</option>
         <?php 
         foreach($types as $type){?>
             <option value="<?=$type->id_types ?>"><?=$type->type ?></option>
