@@ -101,8 +101,7 @@ class Type
         $sth->bindValue(':id_types', $this->get_id_types(), PDO::PARAM_INT);
         $sth->bindValue(':type', $this->get_types(), PDO::PARAM_STR);
         $sth->execute();
-        header('location: /controllers/dashboard/types/list-ctrl.php');
-        die;
+        
     }
 
     /**

@@ -1,4 +1,4 @@
-<table class="text-center">
+<table class="table text-center">
     <thead>
         <tr>
             <th>ID</th>
@@ -40,4 +40,4 @@ foreach ($types as $type) {
 ?></p>
 
 
-<a href="/controllers/dashboard/types/add-ctrl.php">Ajouter catégorie</a>
+<a class="border rounded-3 p-1 white" href="/controllers/dashboard/types/add-ctrl.php">Ajouter catégorie</a>

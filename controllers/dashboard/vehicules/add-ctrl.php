@@ -11,9 +11,26 @@ try {
         $brand = filter_input(INPUT_POST, 'brand', FILTER_SANITIZE_SPECIAL_CHARS);
         $model = filter_input(INPUT_POST, 'model', FILTER_SANITIZE_SPECIAL_CHARS);
         $registration = filter_input(INPUT_POST, 'registration', FILTER_SANITIZE_SPECIAL_CHARS);
-        $mileage = filter_input(INPUT_POST, 'mileage', FILTER_SANITIZE_NUMBER_INT);
-        $picture ='';
-        $id_type = filter_input(INPUT_POST, 'id_type', FILTER_SANITIZE_NUMBER_INT);
+        $mileage = intval(filter_input(INPUT_POST, 'mileage', FILTER_SANITIZE_NUMBER_INT));
+        $picture = $_FILES['picture'];
+        $id_type = intval(filter_input(INPUT_POST, 'id_type', FILTER_SANITIZE_NUMBER_INT));
+        Type::get($id_type);
+        if (!empty($picture['name'])){
+            if($picture['size'] >= FILES_SIZE){
+                $errors['picture'] = 'Votre fichier est trop grand, il ne dois pas dépasser 1 Mo';
+            }
+            elseif(!in_array($picture['type'], VALID_EXTENSIONS)){
+                $errors['picture'] = 'Veuillez mettre un fichier au format png, jpg ou jpeg';
+            }else{
+                $upload = 'public/uploads/vehicles';
+                $newname = pathinfo($picture['full_path']);
+                $namefile = uniqid('img_').'.'.($newname['extension']);
+                move_uploaded_file($picture['tmp_name'],__DIR__."/../../../$upload/$namefile");
+            }
+        }
+        if (!Type::get($id_type)) {
+            $errors['id_type'] = 'Cette catégorie n\'existe pas';
+        }
         if (empty($brand)) {
             $errors['brand'] = 'Veuillez entrer obligatoirement une marque';
         } else {
@@ -61,7 +78,7 @@ try {
             $newVehicle->set_model($model);
             $newVehicle->set_registration($registration);
             $newVehicle->set_mileage($mileage);
-            $newVehicle->set_picture($picture);
+            $newVehicle->set_picture($namefile);
             $newVehicle->set_id_types($id_type);
             $saved = $newVehicle->insert();
         }

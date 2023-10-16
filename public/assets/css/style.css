@@ -1,0 +1,15 @@
+header, footer{
+    background-color: gray;
+    color: white;
+}
+body {
+    font-family:Papyrus, fantasy;
+
+}
+img{
+    height: 30vh;
+}
+.buttonCard a{
+    color: white;
+    background-color: gray;
+}

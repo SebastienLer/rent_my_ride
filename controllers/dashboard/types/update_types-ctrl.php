@@ -24,7 +24,8 @@ try {
             $newType->set_id_types($id_types);
             $newType->set_types($type);
             $state = $newType->update();
-
+            header('location: /controllers/dashboard/types/list-ctrl.php');
+            die;
         }
     }
 } catch (\Throwable $th) {
