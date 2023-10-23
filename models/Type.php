@@ -68,7 +68,7 @@ class Type
     {
         $pdo = connect();
         // Récuperation des données et affichage
-        $sql = 'SELECT * FROM `types`';
+        $sql = 'SELECT * FROM `types` ORDER BY `type`';
         $sth = $pdo->query($sql);
         $typelist = $sth->fetchAll();
         return $typelist;

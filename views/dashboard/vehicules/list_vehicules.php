@@ -1,14 +1,14 @@
 <table class="table text-center">
     <thead>
         <tr>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=type">Catégorie <i class="fa-solid fa-caret-up"></i></th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=type">Catégorie <i class="fa-solid fa-caret-up"></i></a></th>
             <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=brand">Marque <i class="fa-solid fa-caret-up"></i></a></th>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=model">Modèle <i class="fa-solid fa-caret-up"></i></th>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=registration">Registration<i class="fa-solid fa-caret-up"></th>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=mileage">Kilomètrage<i class="fa-solid fa-caret-up"></th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=model">Modèle <i class="fa-solid fa-caret-up"></i></a></th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=registration">Registration<i class="fa-solid fa-caret-up"></i></a></th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=mileage">Kilomètrage<i class="fa-solid fa-caret-up"></i></a></th>
             <th>Images</th>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=created_at">Crée le :<i class="fa-solid fa-caret-up"></th>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=update_at">Modifié le :<i class="fa-solid fa-caret-up"></th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=created_at">Crée le :<i class="fa-solid fa-caret-up"></i></a></th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=update_at">Modifié le :<i class="fa-solid fa-caret-up"></i></a></th>
             <th>Modifier</th>
             <th>Archiver</th>
         </tr>
@@ -62,14 +62,14 @@ foreach ($vehicles as $vehicle) {
 <table class="table text-center">
     <thead>
         <tr>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=type">Catégorie <i class="fa-solid fa-caret-up"></i></th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=type">Catégorie <i class="fa-solid fa-caret-up"></i></a></th>
             <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=brand">Marque <i class="fa-solid fa-caret-up"></i></a></th>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=model">Modèle <i class="fa-solid fa-caret-up"></i></th>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=registration">Registration</th>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=mileage">Kilomètrage</th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=model">Modèle <i class="fa-solid fa-caret-up"></i></a></th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=registration">Registration</a></th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=mileage">Kilomètrage</a></th>
             <th>Images</th>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=created_at">Crée le :<i class="fa-solid fa-caret-up"></th>
-            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=deleted_at">Archivé le :<i class="fa-solid fa-caret-up"></th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=created_at">Crée le :<i class="fa-solid fa-caret-up"></i></a></th>
+            <th><a href="?order=<?= $order== 'ASC' ? 'DESC' : 'ASC' ?>&column=deleted_at">Archivé le :<i class="fa-solid fa-caret-up"></i></a></th>
             <th>Restaurer</th>
             <th>Supprimer</th>
         </tr>
@@ -107,7 +107,7 @@ foreach ($vehiclesArchive as $vehicle) {
     </tbody>
 
 </table>
-<p><?php 
+<p id="info"><?php 
     if($restore === '1'){
         echo 'L\'enregistrement a été restauré';
     }else if($restore === '0'){

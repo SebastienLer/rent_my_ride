@@ -15,8 +15,14 @@ try {
     $registration = filter_input(INPUT_POST, 'registration', FILTER_SANITIZE_SPECIAL_CHARS);
     $mileage = intval(filter_input(INPUT_POST, 'mileage', FILTER_SANITIZE_NUMBER_INT));
     $id_types = intval(filter_input(INPUT_POST, 'id_type', FILTER_SANITIZE_NUMBER_INT));
+    $deleteImg = filter_input(INPUT_POST, 'deleteImg');
+
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $picture = $_FILES['picture'];
+        if($deleteImg){
+            @unlink(__DIR__ ."/../../../public/uploads/vehicles/$pictureName");
+            $pictureName= NULL;
+        }
         if (!empty($picture['name'])){
             if($picture['size'] >= FILES_SIZE){
                 $errors['picture'] = 'Votre fichier est trop grand, il ne dois pas dépasser 1 Mo';
@@ -24,12 +30,12 @@ try {
             elseif( array_key_exists($picture['type'], VALID_EXTENSIONS)){
                 $errors['picture'] = 'Veuillez mettre un fichier au format png, jpg ou jpeg';
             }else{
-                unlink(__DIR__ ."/../../../public/uploads/vehicles/$pictureName");
                 
                 $upload = 'public/uploads/vehicles';
                 $newname = pathinfo($picture['full_path']);
                 $namefile = uniqid('img_').'.'.($newname['extension']);
                 move_uploaded_file($picture['tmp_name'],__DIR__."/../../../$upload/$namefile");
+                @unlink(__DIR__ ."/../../../public/uploads/vehicles/$pictureName");
             }
         }else{
                 $namefile = $pictureName;
@@ -88,7 +94,7 @@ try {
             $newType->set_id_types($id_types);    
             $state = $newType->update();
             header('location: /controllers/dashboard/vehicules/list_vehicules-ctrl.php');
-            die;
+                die;
         }
     }
 } catch (\Throwable $th) {

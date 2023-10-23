@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../../models/Vehicule.php';
-require_once __DIR__ . '/../../../models/Type.php';
+
 
 try {
     $order = filter_input(INPUT_GET, 'order', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -14,7 +14,7 @@ try {
     if (!in_array($column, $columns)) {
         $column = 'type';
     }
-    $vehicles = Vehicle::get_all($order, $column);
+    $vehicles = Vehicle::get_all($column,$order) ;
     $vehiclesArchive = Vehicle::get_archive($order, $column);
     $archived = filter_input(INPUT_GET, 'archive', FILTER_SANITIZE_NUMBER_INT);
     $restore = filter_input(INPUT_GET, 'restore', FILTER_SANITIZE_NUMBER_INT);

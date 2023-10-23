@@ -67,12 +67,12 @@ class Vehicle
         $this->mileage = $mileage_vehicles;
     }
     //  récupérer picture
-    public function get_picture(): string
+    public function get_picture()
     {
         return $this->picture;
     }
     //  set picture
-    public function set_picture(string $picture)
+    public function set_picture($picture)
     {
         $this->picture = $picture;
     }
@@ -118,6 +118,9 @@ class Vehicle
     }
 
     //  insèrer valeur dans la banque de donnée
+    /**
+     * @return bool
+     */
     public function insert(): bool
     {
         $pdo = connect();
@@ -136,29 +139,64 @@ class Vehicle
     }
 
     // methode pour récupérer tout les véhicules
-    public static function get_all(string $order,$column): array
+    /**
+     * @param string $order
+     * @param mixed $column
+     * 
+     * @return array
+     */
+    public static function get_all(string $column = 'type', string $order = 'ASC', int $id_types = NULL, string $search ='', int $page = NULL, int $parPage = 10): array
     {
         $pdo = connect();
-        // Récuperation des données et affichage
+        if ($page && $parPage) {
+            $start = ($page * $parPage) - $parPage;
+            $limit = "LIMIT $start, $parPage";
+        } else {
+            $limit = '';
+        }
+
+        // vérification présence id_types et a la requete
+        if ($id_types) {
+            $add = "AND `types`.`id_types` = $id_types";
+        } else {
+            $add = '';
+        }
+        if ($search) {
+            $add2 =  "AND `brand`LIKE'%$search%' OR `model` LIKE '%$search%'";
+        } else {
+            $add2 = '';
+        }
+        // la requete sql
         $sql = "SELECT `vehicles`.*, `types`.`type` 
         FROM `vehicles`
-        INNER JOIN `types` ON `vehicles`.`Id_types` = `types`.`Id_types`
-        WHERE `deleted_at` IS NULL ORDER BY `$column` $order  ;";
-        $sth= $pdo->query($sql);
+        INNER JOIN `types` ON `vehicles`.`id_types` = `types`.`id_types`
+        WHERE 1=1 AND `deleted_at` IS NULL $add $add2
+        ORDER BY `$column` $order 
+        $limit ;";
+
+        $sth = $pdo->query($sql);
         $vehicleList = $sth->fetchAll();
         return $vehicleList;
     }
+    /**
+     * @param int $id_vehicles
+     * 
+     * @return object
+     */
     public static function get(int $id_vehicles): object
     {
         $pdo = connect();
-        $sql = 'SELECT * FROM `vehicles` WHERE `id_vehicles`=:id_vehicles;';
+        $sql = 'SELECT * FROM `vehicles` INNER JOIN `types` ON `vehicles`.`Id_types` = `types`.`Id_types` WHERE `id_vehicles`=:id_vehicles;';
         $sth = $pdo->prepare($sql);
         $sth->bindValue(':id_vehicles', $id_vehicles, PDO::PARAM_INT);
         $sth->execute();
         $result = $sth->fetch();
         return $result;
     }
-    public function update()
+    /**
+     * @return [type]
+     */
+    public function update(): bool
     {
         $pdo = connect();
         $sql = 'UPDATE `vehicles` 
@@ -173,8 +211,15 @@ class Vehicle
         $sth->bindValue(':id_types', $this->get_id_types(), PDO::PARAM_INT);
         $sth->bindValue(':id_vehicles', $this->get_id_vehicles(), PDO::PARAM_INT);
         $sth->execute();
+        return (bool) $sth->rowCount();
     }
-    public static function archive($id_vehicles){
+    /**
+     * @param mixed $id_vehicles
+     * 
+     * @return [type]
+     */
+    public static function archive($id_vehicles)
+    {
         $pdo = connect();
         $sql = 'UPDATE `vehicles`
                 SET `deleted_at`= NOW()
@@ -184,7 +229,13 @@ class Vehicle
         $result = $sth->execute();
         return $result;
     }
-    public static function get_archive(string $order,$column): array
+    /**
+     * @param string $order
+     * @param mixed $column
+     * 
+     * @return array
+     */
+    public static function get_archive(string $order, $column): array
     {
         $pdo = connect();
         // Récuperation des données et affichage
@@ -192,20 +243,31 @@ class Vehicle
         FROM `vehicles`
         INNER JOIN `types` ON `vehicles`.`Id_types` = `types`.`Id_types`
         WHERE `deleted_at` IS NOT NULL ORDER BY `$column` $order  ;";
-        $sth= $pdo->query($sql);
+        $sth = $pdo->query($sql);
         $vehicleList = $sth->fetchAll();
         return $vehicleList;
     }
-    public static function restore($id_vehicles){
+    /**
+     * @param mixed $id_vehicles
+     * 
+     * @return [type]
+     */
+    public static function restore($id_vehicles)
+    {
         $pdo = connect();
         $sql = 'UPDATE `vehicles`
                 SET `deleted_at`= NULL
                 WHERE `id_vehicles`=:id_vehicles ;';
         $sth = $pdo->prepare($sql);
         $sth->bindValue(':id_vehicles', $id_vehicles);
-        $restore =$sth->execute();
+        $restore = $sth->execute();
         return $restore;
     }
+    /**
+     * @param mixed $id_vehicles
+     * 
+     * @return bool
+     */
     public static function delete($id_vehicles): bool
     {
         $pdo = connect();
@@ -214,5 +276,32 @@ class Vehicle
         $sth->bindValue(':id_vehicles', $id_vehicles, PDO::PARAM_INT);
         $sth->execute();
         return (bool) $sth->rowCount();
+    }
+    public static function howMany(int $id_types = NULL, string $search = NULL)
+    {
+
+        // vérification présence id_types et a la requete
+        if ($id_types) {
+            $add = "AND `vehicles`.`id_types` = $id_types";
+        } else {
+            $add = '';
+        }
+        if ($search) {
+            $add2 =  "AND `brand`LIKE'%$search%' OR `model` LIKE '%$search%'";
+        } else {
+            $add2 = '';
+        }
+        $pdo = connect();
+        // On détermine le nombre total d'articles
+        $sql = "SELECT COUNT(*) AS `nb_articles`
+        FROM `vehicles`
+        WHERE 1=1 AND `deleted_at` IS NULL $add $add2";
+        // On prépare la requête
+        $sth = $pdo->prepare($sql);
+        // On exécute
+        $sth->execute();
+        // On récupère le nombre d'articles
+        $result = $sth->fetch();
+        return $result->nb_articles;
     }
 }

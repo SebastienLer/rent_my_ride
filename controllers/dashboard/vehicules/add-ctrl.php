@@ -14,18 +14,18 @@ try {
         $mileage = intval(filter_input(INPUT_POST, 'mileage', FILTER_SANITIZE_NUMBER_INT));
         $picture = $_FILES['picture'];
         $id_type = intval(filter_input(INPUT_POST, 'id_type', FILTER_SANITIZE_NUMBER_INT));
+        $namefile = NULL ;
         Type::get($id_type);
-        if (!empty($picture['name'])){
-            if($picture['size'] >= FILES_SIZE){
+        if (!empty($picture['name'])) {
+            if ($picture['size'] >= FILES_SIZE) {
                 $errors['picture'] = 'Votre fichier est trop grand, il ne dois pas dépasser 1 Mo';
-            }
-            elseif(!in_array($picture['type'], VALID_EXTENSIONS)){
+            } elseif (!in_array($picture['type'], VALID_EXTENSIONS)) {
                 $errors['picture'] = 'Veuillez mettre un fichier au format png, jpg ou jpeg';
-            }else{
+            } else {
                 $upload = 'public/uploads/vehicles';
                 $newname = pathinfo($picture['full_path']);
-                $namefile = uniqid('img_').'.'.($newname['extension']);
-                move_uploaded_file($picture['tmp_name'],__DIR__."/../../../$upload/$namefile");
+                $namefile = uniqid('img_') . '.' . ($newname['extension']);
+                move_uploaded_file($picture['tmp_name'], __DIR__ . "/../../../$upload/$namefile");
             }
         }
         if (!Type::get($id_type)) {
@@ -70,6 +70,9 @@ try {
             if (!$isOk) {
                 $errors['id_type'] = 'Catégorie non valide';
             }
+            if(!Type::get($id_type)){
+                $errors['id_type'] = 'La catégorie n\'existe pas';
+            }
         }
 
         if (empty($errors)) {
@@ -85,7 +88,7 @@ try {
     }
 } catch (\Throwable $th) {
     $error = $th->getMessage();
-    
+
     include __DIR__ . '/../../../views/templates/header.php';
     include __DIR__ . '/../../../views/templates/error.php';
     include __DIR__ . '/../../../views/templates/footer.php';
